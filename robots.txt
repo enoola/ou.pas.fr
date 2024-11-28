@@ -1,0 +1,27 @@
+# Configuration pour permettre l'indexation du site
+User-agent: *
+Allow: /
+Crawl-delay: 1
+
+# Protection minimale des zones sensibles
+Disallow: /admin/
+Disallow: /cgi-bin/
+Disallow: /private/
+Disallow: /*.sql$
+Disallow: /*.log$
+
+# Indique l'emplacement du sitemap (à adapter selon votre URL)
+Sitemap: https://www.votresite.com/sitemap.xml
+
+# Directives spécifiques pour les principaux moteurs de recherche
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Yandexbot
+Allow: /
+Crawl-delay: 1

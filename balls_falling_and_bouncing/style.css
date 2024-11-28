@@ -1,0 +1,26 @@
+/* style.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background-color: #111;
+  overflow: hidden;
+}
+
+.dot {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+}

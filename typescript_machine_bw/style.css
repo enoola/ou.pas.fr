@@ -1,0 +1,47 @@
+/* style.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.container {
+  font-family: "Courier New", Courier, monospace; /* For a typewriter font effect */
+  font-size: 2em;
+  text-align: center;
+}
+
+.typewriter {
+  overflow: hidden; /* Ensures the text starts hidden */
+  border-right: 2px solid black; /* Cursor effect */
+  white-space: nowrap; /* Prevents text from wrapping */
+  letter-spacing: 2px;
+  animation: typing 3.5s steps(30, end), blink-caret 0.75s step-end infinite;
+}
+
+#mytext.blinking::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 100%;
+  background-color: black;
+  animation: blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: black; }
+}

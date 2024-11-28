@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Style Page</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+            font-family: 'Courier New', monospace;
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFFFFF;
+            font-size: 24px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        #messageorig {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00FF00;
+            font-size: 24px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="message"></div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const message = document.getElementById('message');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const hexChars = '42CcHhAaRrLlOoTtEe';
+        const columns = canvas.width / 20;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = '15px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = hexChars[Math.floor(Math.random() * hexChars.length)];
+                ctx.fillText(text, i * 20, drops[i] * 20);
+
+                if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        const messageParts = [ "Coucou Chaton",
+            "le site sera bientôt disponible",
+            "ou pas...",
+            "ou.pas.fr"
+        ];
+
+        function showMessagePart(index) {
+            if (index < messageParts.length) {
+                message.style.opacity = '0';
+                setTimeout(() => {
+                    message.textContent = messageParts[index];
+                    message.style.opacity = '1';
+                    setTimeout(() => showMessagePart(index + 1), 2000);
+                }, 1000);
+            }
+        }
+
+        setInterval(draw, 33);
+        setTimeout(() => showMessagePart(0), 3000);
+    </script>
+</body>
+</html>
+

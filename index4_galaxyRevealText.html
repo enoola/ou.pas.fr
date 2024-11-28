@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>404</title>
+<style>body{margin:0;background:#14001E;overflow:hidden}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const c = document.getElementById('c'),
+x = c.getContext('2d'),
+particles = [];
+
+let w, h, mx, my;
+
+const resize = () => {
+  w = c.width = innerWidth;
+  h = c.height = innerHeight;
+};
+resize();
+window.onresize = resize;
+
+class P {
+  constructor() {
+    this.reset();
+    this.vx = 0;
+    this.vy = 0;
+  }
+  reset() {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+    this.tx = this.x;
+    this.ty = this.y;
+    this.size = Math.random() * 2 + 1;
+  }
+}
+
+for(let i = 0; i < 200; i++) particles.push(new P());
+
+const text = "Bientôt disponible (ou pas)";
+let phase = 0, start = Date.now();
+
+c.onmousemove = e => {
+  mx = e.clientX;
+  my = e.clientY;
+};
+
+function animate() {
+  x.fillStyle = 'rgba(20,0,30,.2)';
+  x.fillRect(0, 0, w, h);
+
+  // Draw text to check collision
+  x.font = 'bold 120px Arial';
+  x.textAlign = 'center';
+  x.textBaseline = 'middle';
+  x.fillStyle = '#fff';
+  
+  const elapsed = (Date.now() - start) / 1000;
+  phase = Math.min(elapsed / 2, 2);
+
+  if(phase < 1) {
+    // Converge
+    for(let p of particles) {
+      p.tx = w/2 + (Math.random() - 0.5) * 200;
+      p.ty = h/2 + (Math.random() - 0.5) * 100;
+    }
+  } else if(phase < 2) {
+    // Check text collision and disperse
+    x.globalAlpha = 0;
+    x.fillText(text, w/2, h/2);
+    const data = x.getImageData(0, 0, w, h).data;
+    x.globalAlpha = 1;
+
+    for(let p of particles) {
+      const pixel = (~~p.y * w + ~~p.x) * 4;
+      if(data[pixel + 3] > 0) {
+        p.tx = p.x < w/2 ? -20 : w + 20;
+        p.ty = p.y;
+      }
+    }
+  }
+
+  // Draw particles and connections
+  for(let p of particles) {
+    // Move
+    p.vx += (p.tx - p.x) * 0.1;
+    p.vy += (p.ty - p.y) * 0.1;
+
+    // Mouse repulsion
+    if(mx) {
+      const dx = mx - p.x;
+      const dy = my - p.y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if(d < 100) {
+        p.vx -= dx/d * 2;
+        p.vy -= dy/d * 2;
+      }
+    }
+
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vx *= 0.95;
+    p.vy *= 0.95;
+
+    // Draw
+    x.beginPath();
+    x.arc(p.x, p.y, p.size, 0, 7);
+    x.fillStyle = '#fff';
+    x.fill();
+
+    // Connections
+    for(let p2 of particles) {
+      const dx = p2.x - p.x;
+      const dy = p2.y - p.y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if(d < 50) {
+        x.beginPath();
+        x.moveTo(p.x, p.y);
+        x.lineTo(p2.x, p2.y);
+        x.strokeStyle = `rgba(255,255,255,${0.15 - d/50 * 0.15})`;
+        x.stroke();
+      }
+    }
+  }
+
+  // Draw visible text
+  if(phase >= 1) {
+    x.fillStyle = '#fff';
+    x.fillText(text, w/2, h/2);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>
